@@ -3,7 +3,7 @@ Realtime chat app with websockets using Node.js, Express and Socket.io
 
 ## Usage
 
-### `npm install` OR `yarn install`
+### `npm install` or `yarn install`
 
 Installs all dependencies/packages required for the app to run.
 
