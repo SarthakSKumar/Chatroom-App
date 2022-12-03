@@ -20,7 +20,7 @@ const io = socketio(server);
 
 app.use(express.static(path.join(__dirname, "public")));
 
-const botName = "Mentomatch Chat";
+const botName = "ChatRoom App";
 
 (async () => {
   pubClient = createClient({
@@ -40,7 +40,7 @@ io.on("connection", (socket) => {
     socket.join(user.room);
 
 
-    socket.emit("message", formatMessage(botName, "Welcome to Mentomatch Chat!"));
+    socket.emit("message", formatMessage(botName, "Welcome to ChatRoom App!"));
 
 
     socket.broadcast
