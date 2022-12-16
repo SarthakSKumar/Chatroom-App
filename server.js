@@ -24,18 +24,11 @@ const io = socketio(server);
 
 app.use(express.static(path.join(__dirname, "public")));
 
-const uri = process.env.MONGO_URI;
-const client = new MongoClient(uri, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  serverApi: ServerApiVersion.v1,
-});
-
 const botName = "Mentomatch Chat";
 
 (async () => {
   pubClient = createClient({
-    url: "redis://127.0.0.1:6379",
+    url: process.env.REDIS_ENDPOINT_URL,
   });
   await pubClient.connect();
   subClient = pubClient.duplicate();
@@ -46,15 +39,6 @@ io.on("connection", (socket) => {
   console.log(io.of("/").adapter);
   socket.on("joinRoom", ({ username, room }) => {
     const user = userJoin(socket.id, username, room);
-    client.connect((err) => {
-      const collection = client.db("Users").collection(socket.id);
-      collection.insertOne({
-        _id: socket.id,
-        username: username,
-        timestamp: date,
-        room: room,
-      });
-    });
     socket.join(user.room);
 
     socket.emit(
@@ -77,10 +61,6 @@ io.on("connection", (socket) => {
 
   socket.on("chatMessage", (msg) => {
     const user = getCurrentUser(socket.id);
-    client.connect((err) => {
-      const collection = client.db("Chats").collection(user.username);
-      collection.insertOne({ _id: socket.id, timestamp: date, message: msg });
-    });
     io.to(user.room).emit("message", formatMessage(user.username, msg));
   });
 
@@ -105,6 +85,6 @@ const PORT = process.env.PORT || 3000;
 
 server.listen(PORT, () =>
   console.log(
-    `Server running on port ${PORT}\nDeployment available at https://localhost:${PORT}`
+    `Server running on port ${PORT}\nDeployment available at http://localhost:${PORT}`
   )
 );
