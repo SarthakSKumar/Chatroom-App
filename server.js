@@ -5,6 +5,10 @@ const socketio = require("socket.io");
 const formatMessage = require("./utils/messages");
 const createAdapter = require("@socket.io/redis-adapter").createAdapter;
 const redis = require("redis");
+const { MongoClient, ServerApiVersion } = require("mongodb");
+const dotenv = require("dotenv");
+const cors = require("cors");
+const date = new Date();
 require("dotenv").config();
 const { createClient } = redis;
 const {
@@ -20,28 +24,43 @@ const io = socketio(server);
 
 app.use(express.static(path.join(__dirname, "public")));
 
-const botName = "ChatRoom App";
+const uri = process.env.MONGO_URI;
+const client = new MongoClient(uri, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  serverApi: ServerApiVersion.v1,
+});
+
+const botName = "Mentomatch Chat";
 
 (async () => {
   pubClient = createClient({
-    url: "redis://127.0.0.1:6379"
-  })
+    url: "redis://127.0.0.1:6379",
+  });
   await pubClient.connect();
   subClient = pubClient.duplicate();
   io.adapter(createAdapter(pubClient, subClient));
 })();
 
-
 io.on("connection", (socket) => {
   console.log(io.of("/").adapter);
   socket.on("joinRoom", ({ username, room }) => {
     const user = userJoin(socket.id, username, room);
-
+    client.connect((err) => {
+      const collection = client.db("Users").collection(socket.id);
+      collection.insertOne({
+        _id: socket.id,
+        username: username,
+        timestamp: date,
+        room: room,
+      });
+    });
     socket.join(user.room);
 
-
-    socket.emit("message", formatMessage(botName, "Welcome to ChatRoom App!"));
-
+    socket.emit(
+      "message",
+      formatMessage(botName, "Welcome to Mentomatch Chat!")
+    );
 
     socket.broadcast
       .to(user.room)
@@ -50,20 +69,20 @@ io.on("connection", (socket) => {
         formatMessage(botName, `${user.username} has joined the chat`)
       );
 
-
     io.to(user.room).emit("roomUsers", {
       room: user.room,
       users: getRoomUsers(user.room),
     });
   });
 
-
   socket.on("chatMessage", (msg) => {
     const user = getCurrentUser(socket.id);
-
+    client.connect((err) => {
+      const collection = client.db("Chats").collection(user.username);
+      collection.insertOne({ _id: socket.id, timestamp: date, message: msg });
+    });
     io.to(user.room).emit("message", formatMessage(user.username, msg));
   });
-
 
   socket.on("disconnect", () => {
     const user = userLeave(socket.id);
@@ -73,7 +92,6 @@ io.on("connection", (socket) => {
         "message",
         formatMessage(botName, `${user.username} has left the chat`)
       );
-
 
       io.to(user.room).emit("roomUsers", {
         room: user.room,
@@ -85,4 +103,8 @@ io.on("connection", (socket) => {
 
 const PORT = process.env.PORT || 3000;
 
-server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+server.listen(PORT, () =>
+  console.log(
+    `Server running on port ${PORT}\nDeployment available at https://localhost:${PORT}`
+  )
+);

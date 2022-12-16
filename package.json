@@ -1,5 +1,5 @@
 {
-  "name": "ChatRoom App",
+  "name": "MentomatchChat",
   "version": "1.0.0",
   "description": "Realtime chat app with rooms",
   "main": "server.js",
@@ -13,11 +13,11 @@
     "@socket.io/redis-adapter": "^7.1.0",
     "dotenv": "^14.3.2",
     "express": "^4.17.1",
-    "moment": "^2.29.4",
+    "moment": "^2.24.0",
     "redis": "^4.0.2",
-    "socket.io": "^4.5.4"
+    "socket.io": "^4.4.1"
   },
   "devDependencies": {
-    "nodemon": "^2.0.20"
+    "nodemon": "^2.0.2"
   }
 }
