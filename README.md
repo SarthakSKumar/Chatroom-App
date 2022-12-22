@@ -1,10 +1,13 @@
 <div align="center">
-  <h1>MentomatchChat</h1>
+  <h1> Chatroom-App </h1>
   <h3>Realtime chat app <a href="https://chatroom-app-lac.vercel.app/"> : Chat Here! </a></h3>
+ 
 </div>
+ 
+![image](https://user-images.githubusercontent.com/113296626/209076040-863136f8-a2c8-48a5-a47a-ef160346681f.png)
 
-![photo_2022-12-17_11-02-46](https://user-images.githubusercontent.com/113296626/208227640-46a48188-2004-4f61-85db-b6b511d11330.jpg) 
 
+   
 # A realtime chatroom app with rooms 💬
  Realtime chat app with websockets using Node.js, Express and Socket.io
 
