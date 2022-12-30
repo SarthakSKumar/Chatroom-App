@@ -57,3 +57,5 @@ npm run dev OR yarn run dev
 
 Go to localhost:3000
 ```
+## Repo Contributors ❤️
+  <img src = "https://contrib.rocks/image?repo=SarthakSKumar/Chatroom-App"/>
