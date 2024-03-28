@@ -12,7 +12,7 @@
   "dependencies": {
     "@socket.io/redis-adapter": "^7.1.0",
     "dotenv": "^14.3.2",
-    "express": "^4.17.3",
+    "express": "^4.19.2",
     "https": "^1.0.0",
     "moment": "^2.24.0",
     "redis": "^4.0.2",
